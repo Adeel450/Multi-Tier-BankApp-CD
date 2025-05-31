@@ -35,6 +35,26 @@ volumeBindingMode: WaitForFirstConsumer
 
 ---
 
+# Persistent Volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ebs-sc
+  csi:
+    driver: ebs.csi.aws.com
+    volumeHandle: <EBS_VOLUME_ID>   # Replace with your actual EBS volume ID
+    fsType: ext4
+
+---
+
 # Persistent Volume Claim for MySQL
 apiVersion: v1
 kind: PersistentVolumeClaim
