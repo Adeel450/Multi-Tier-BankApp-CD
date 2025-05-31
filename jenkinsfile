@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'git', url: 'https://github.com/Adeel450/Multi-Tier-BankApp-CD.git'
+            }
+        }
+        
+        stage('Hello') {
+            steps {
+                withKubeConfig(
+                    caCertificate: '',
+                    clusterName: 'devopsshack-cluster',
+                    contextName: '',
+                    credentialsId: 'k8-cred',
+                    namespace: 'webapps',
+                    restrictKubeConfigAccess: false,
+                    serverUrl: 'https://A5394ADE4EF84F51BDB8F2C31EA22DB1.gr7.us-east-1.eks.amazonaws.com'
+                ) {
+                    sh "kubectl apply -f Manifest/manifest.yaml -n webapps"
+                    sh "kubectl apply -f Manifest/HPA.yaml"
+                    sleep 30
+                    sh "kubectl get pods -n webapps"
+                    sh "kubectl get service -n webapps"
+                }
+            }
+        }
+    }
+}
