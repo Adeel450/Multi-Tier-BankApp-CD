@@ -2,12 +2,15 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: bankapp-ingress
-  namespace: webapps
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
+  ingressClassName: nginx
   rules:
-    - host: bankapp.example.com
+    - host: www.shackverse.co
       http:
         paths:
           - path: /
@@ -17,4 +20,7 @@ spec:
                 name: bankapp-service
                 port:
                   number: 80
-
+  tls:
+    - hosts:
+        - www.shackverse.co
+      secretName: shackverse-co-tls
