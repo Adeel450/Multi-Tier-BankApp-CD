@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bankapp-ci-cron
+  namespace: webapps
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: ci-runner
+              image: alpine
+              command: ["echo", "Running CI job"]
+          restartPolicy: OnFailure
+
